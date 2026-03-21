@@ -1,40 +1,32 @@
 "use client";
 
 import Link from 'next/link';
-import { useAuthStore } from '../../store/useAuthStore';
-import { Button } from '../ui/button';
+import { Layers } from 'lucide-react';
 
 export function Navbar() {
-  const { user, logout } = useAuthStore();
-
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Link href="/" className="flex items-center space-x-2">
-            <span className="font-bold sm:inline-block">Slidr 2.0</span>
+    <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/95 backdrop-blur">
+      <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center shadow-sm">
+            <Layers className="w-4 h-4 text-white" />
+          </div>
+          <span className="font-bold text-xl tracking-tight text-slate-900">Slidr</span>
+        </Link>
+        <nav className="flex items-center gap-2">
+          <Link
+            href="/login"
+            className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-50 transition-colors"
+          >
+            Log in
           </Link>
-        </div>
-        
-        <div className="flex flex-1 items-center justify-end space-x-2">
-          {user ? (
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-muted-foreground">{user.email}</span>
-              <Button variant="outline" size="sm" onClick={logout}>
-                Log out
-              </Button>
-            </div>
-          ) : (
-            <nav className="flex items-center space-x-2">
-              <Link href="/login">
-                <Button variant="ghost" size="sm">Log in</Button>
-              </Link>
-              <Link href="/signup">
-                <Button size="sm">Sign up</Button>
-              </Link>
-            </nav>
-          )}
-        </div>
+          <Link
+            href="/signup"
+            className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors"
+          >
+            Sign up
+          </Link>
+        </nav>
       </div>
     </header>
   );
