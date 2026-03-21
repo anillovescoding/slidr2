@@ -1,0 +1,10 @@
+{
+  "name": "slidr2",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "npm@9.6.4",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}

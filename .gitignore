@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Next.js build output
+apps/web/.next/
+apps/web/out/
+
+# Android build output
+apps/mobile/android/
+apps/mobile/.expo/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# PocketBase data
+pocketbase/pb_data/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# TypeScript
+*.tsbuildinfo
