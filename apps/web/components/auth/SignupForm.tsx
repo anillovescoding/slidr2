@@ -38,7 +38,9 @@ export function SignupForm() {
       await pb.collection('users').authWithPassword(email, password);
       router.push('/dashboard');
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Failed to create account');
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error('Signup error:', msg);
+      setError(msg || 'Failed to create account');
     } finally {
       setIsLoading(false);
     }

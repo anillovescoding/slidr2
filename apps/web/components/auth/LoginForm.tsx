@@ -28,7 +28,9 @@ export function LoginForm() {
       login(authData.record);
       router.push('/dashboard');
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Failed to authenticate');
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error('Login error:', msg);
+      setError(msg || 'Failed to authenticate');
     } finally {
       setIsLoading(false);
     }
