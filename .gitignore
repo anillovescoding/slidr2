@@ -14,8 +14,9 @@ apps/mobile/.expo/
 .env.local
 .env.*.local
 
-# PocketBase data
+# PocketBase data and Windows binary
 pocketbase/pb_data/
+pocketbase/*.exe
 
 # OS
 .DS_Store
