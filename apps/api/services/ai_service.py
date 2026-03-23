@@ -2,6 +2,11 @@ from typing import Literal
 import json
 import openai
 import anthropic as anthropic_sdk
+try:
+    import google.generativeai as genai
+    GEMINI_AVAILABLE = True
+except ImportError:
+    GEMINI_AVAILABLE = False
 from pydantic import BaseModel
 from services.crypto_service import CryptoService
 
@@ -37,7 +42,6 @@ def _build_user_prompt(topic: str, num_slides: int) -> str:
 
 
 def _parse_slides(raw: str) -> list[GeneratedSlide]:
-    # Strip markdown code fences if present
     raw = raw.strip()
     if raw.startswith("```"):
         raw = raw.split("\n", 1)[1]
@@ -74,6 +78,19 @@ class AiService:
         return _parse_slides(raw)
 
     @staticmethod
+    def generate_with_gemini(api_key: str, topic: str, num_slides: int) -> list[GeneratedSlide]:
+        if not GEMINI_AVAILABLE:
+            raise RuntimeError("google-generativeai is not installed. Run: pip install google-generativeai")
+        genai.configure(api_key=api_key)
+        model = genai.GenerativeModel(
+            model_name="gemini-1.5-pro",
+            system_instruction=SYSTEM_PROMPT,
+        )
+        response = model.generate_content(_build_user_prompt(topic, num_slides))
+        raw = response.text or ""
+        return _parse_slides(raw)
+
+    @staticmethod
     def generate(
         encrypted_key: str,
         provider: str,
@@ -81,6 +98,9 @@ class AiService:
         num_slides: int,
     ) -> list[GeneratedSlide]:
         api_key = CryptoService.decrypt(encrypted_key)
-        if provider.lower() == "anthropic":
+        provider_lower = provider.lower()
+        if provider_lower == "anthropic":
             return AiService.generate_with_anthropic(api_key, topic, num_slides)
+        if provider_lower == "gemini":
+            return AiService.generate_with_gemini(api_key, topic, num_slides)
         return AiService.generate_with_openai(api_key, topic, num_slides)

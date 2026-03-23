@@ -45,7 +45,7 @@ export function SignupForm() {
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto bg-slate-900/40 backdrop-blur-xl border-white/5 shadow-2xl rounded-[2rem] overflow-hidden">
+    <Card className="w-full max-w-md mx-auto bg-surface border border-white/10 shadow-2xl rounded-[2rem] overflow-hidden">
       <CardHeader className="text-center pt-8 pb-4">
         <div className="mx-auto w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center mb-6 shadow-[0_0_20px_rgba(99,102,241,0.4)]">
           <Sparkles className="w-6 h-6 text-white" />
@@ -58,7 +58,7 @@ export function SignupForm() {
       <form onSubmit={handleSignup}>
         <CardContent className="space-y-6 px-8">
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-[10px] font-black text-slate-500 uppercase tracking-widest pl-1">Identity</Label>
+            <Label htmlFor="email" className="text-[10px] font-black text-slate-500 uppercase tracking-widest pl-1">Username / Email</Label>
             <div className="relative">
               <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
               <Input
@@ -67,13 +67,13 @@ export function SignupForm() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="neural-id@slidr.ai"
+                placeholder="buildawesomecarousels@slidr.ai"
                 className="bg-white/5 border-white/10 text-white pl-12 h-12 rounded-xl focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all placeholder:text-slate-600"
               />
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password" className="text-[10px] font-black text-slate-500 uppercase tracking-widest pl-1">Security Passcode</Label>
+            <Label htmlFor="password" className="text-[10px] font-black text-slate-500 uppercase tracking-widest pl-1">Password</Label>
             <div className="relative">
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
               <Input
@@ -88,7 +88,7 @@ export function SignupForm() {
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="passwordConfirm" className="text-[10px] font-black text-slate-500 uppercase tracking-widest pl-1">Verify Passcode</Label>
+            <Label htmlFor="passwordConfirm" className="text-[10px] font-black text-slate-500 uppercase tracking-widest pl-1">Confirm Password</Label>
             <div className="relative">
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
               <Input

@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
-:root {
+/* Dark mode (default) */
+:root,
+.dark {
   --background: #060e20;
   --foreground: #dee5ff;
   --primary: #a3a6ff;
@@ -8,6 +10,17 @@
   --surface: #0f1930;
   --surface-bright: #1f2b49;
   --sidebar-bg: #091328;
+}
+
+/* Light mode */
+.light {
+  --background: #f4f6fb;
+  --foreground: #0f1930;
+  --primary: #6366f1;
+  --secondary: #8b5cf6;
+  --surface: #ffffff;
+  --surface-bright: #e8ecf7;
+  --sidebar-bg: #eef1f9;
 }
 
 @theme {

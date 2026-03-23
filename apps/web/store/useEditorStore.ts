@@ -44,6 +44,7 @@ interface EditorState {
   setActiveIndex: (index: number) => void;
   updateSlide: (index: number, patch: Partial<Slide>) => void;
   addSlide: () => void;
+  duplicateSlide: (index: number) => void;
   deleteSlide: (index: number) => void;
   moveSlide: (from: number, to: number) => void;
   replaceSlides: (slides: Slide[]) => void;
@@ -85,6 +86,14 @@ export const useEditorStore = create<EditorState>((set, get) => ({
     set((s) => {
       const slides = [...s.slides, makeSlide()];
       return { slides, activeIndex: slides.length - 1, isDirty: true };
+    }),
+
+  duplicateSlide: (index) =>
+    set((s) => {
+      const slides = [...s.slides];
+      const copy = { ...slides[index], id: crypto.randomUUID() };
+      slides.splice(index + 1, 0, copy);
+      return { slides, activeIndex: index + 1, isDirty: true };
     }),
 
   deleteSlide: (index) =>

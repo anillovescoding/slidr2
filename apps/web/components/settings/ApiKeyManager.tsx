@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useAuthStore } from "../../store/useAuthStore";
 import { pb } from "../../lib/pocketbase";
-import { Plus, Trash2, Eye, EyeOff, ChevronDown, ChevronUp, ShieldCheck, Zap, Image as ImageIcon, Search, Loader2 } from "lucide-react";
+import { Plus, Trash2, Eye, EyeOff, ChevronDown, ChevronUp, ShieldCheck, Zap, Image as ImageIcon, Search, Loader2, CheckCircle2, Edit2, Save } from "lucide-react";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -57,45 +57,55 @@ const PROVIDER_GROUPS: { group: string; icon: React.ElementType; providers: Prov
   },
 ];
 
-function ProviderRow({ provider, isConfigured, onAdd, onDelete }: {
+function ProviderRow({ provider, isConfigured, onAdd, onDelete, pendingValue, onPendingChange }: {
   provider: ProviderConfig;
   isConfigured: boolean;
   onAdd: (id: string, key: string) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
+  pendingValue: string;
+  onPendingChange: (id: string, value: string) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
-  const [value, setValue] = useState('');
   const [show, setShow] = useState(false);
   const [saving, setSaving] = useState(false);
 
   const handleAdd = async () => {
-    if (!value.trim()) return;
+    if (!pendingValue.trim()) return;
     setSaving(true);
-    await onAdd(provider.id, value.trim());
-    setValue('');
+    await onAdd(provider.id, pendingValue.trim());
+    onPendingChange(provider.id, '');
     setExpanded(false);
     setSaving(false);
   };
 
+  const handleToggle = () => setExpanded((e) => !e);
+
   return (
     <div className={`glass-dark border rounded-3xl overflow-hidden transition-all duration-300 ${isConfigured ? 'border-primary/20 bg-primary/5' : 'border-white/5 hover:border-white/10'}`}>
-      <div
-        className="flex items-center gap-4 px-6 py-5 cursor-pointer"
-        onClick={() => !isConfigured && setExpanded((e) => !e)}
-      >
+      <div className="flex items-center gap-4 px-6 py-5 cursor-pointer" onClick={handleToggle}>
         <div className={`w-10 h-10 rounded-2xl flex items-center justify-center border transition-all ${isConfigured ? 'bg-primary/20 border-primary/20 text-primary' : 'bg-white/5 border-white/5 text-foreground/20'}`}>
           <provider.icon className="w-5 h-5" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-bold text-white tracking-tight">{provider.label}</p>
+          <div className="flex items-center gap-2">
+            <p className="text-sm font-bold text-white tracking-tight">{provider.label}</p>
+            {isConfigured && <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />}
+          </div>
           <p className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest mt-0.5">{provider.description}</p>
         </div>
         {isConfigured ? (
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <div className="flex items-center gap-1.5 py-1.5 px-3 rounded-full bg-emerald-500/10 border border-emerald-500/20">
                <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Active</span>
             </div>
+            <button
+              onClick={(e) => { e.stopPropagation(); handleToggle(); }}
+              className="p-2.5 rounded-2xl hover:bg-white/5 text-foreground/20 hover:text-white transition-all border border-transparent hover:border-white/10"
+              title="Edit key"
+            >
+              <Edit2 className="w-4 h-4" />
+            </button>
             <button
               onClick={(e) => { e.stopPropagation(); onDelete(provider.id); }}
               className="p-2.5 rounded-2xl hover:bg-red-500/10 text-foreground/20 hover:text-red-400 transition-all border border-transparent hover:border-red-400/20"
@@ -106,7 +116,7 @@ function ProviderRow({ provider, isConfigured, onAdd, onDelete }: {
           </div>
         ) : (
           <button
-            onClick={(e) => { e.stopPropagation(); setExpanded((ex) => !ex); }}
+            onClick={(e) => { e.stopPropagation(); handleToggle(); }}
             className="p-2.5 rounded-2xl hover:bg-white/5 text-foreground/20 hover:text-white transition-all border border-transparent hover:border-white/10"
           >
             {expanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
@@ -114,14 +124,19 @@ function ProviderRow({ provider, isConfigured, onAdd, onDelete }: {
         )}
       </div>
 
-      {!isConfigured && expanded && (
+      {expanded && (
         <div className="px-6 pb-6 pt-2 bg-white/5 border-t border-white/5 space-y-4 animate-in slide-in-from-top-2 duration-300">
+          {isConfigured && (
+            <p className="text-[10px] font-bold text-amber-400/80 uppercase tracking-widest">
+              Replacing this key will overwrite the existing one.
+            </p>
+          )}
           <div className="relative group">
             <input
               type={show ? 'text' : 'password'}
-              placeholder={provider.placeholder || 'Paste your secure token...'}
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
+              placeholder={isConfigured ? 'Paste new key to replace...' : (provider.placeholder || 'Paste your secure token...')}
+              value={pendingValue}
+              onChange={(e) => onPendingChange(provider.id, e.target.value)}
               className="w-full pr-12 pl-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-sm font-bold text-white placeholder-foreground/10 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
             />
             <button
@@ -139,15 +154,15 @@ function ProviderRow({ provider, isConfigured, onAdd, onDelete }: {
               rel="noopener noreferrer"
               className="text-[10px] font-bold text-primary hover:text-primary-light uppercase tracking-widest"
             >
-              Master API Dashboard →
+              Get API Key →
             </a>
             <button
               onClick={handleAdd}
-              disabled={!value.trim() || saving}
+              disabled={!pendingValue.trim() || saving}
               className="inline-flex items-center gap-2 px-6 py-3 bg-linear-to-br from-primary to-secondary disabled:opacity-50 text-white text-[10px] font-bold uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-primary/20 active:scale-95"
             >
-              {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
-              {saving ? 'Synchronizing...' : 'Validate & Save'}
+              {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : (isConfigured ? <Save className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />)}
+              {saving ? 'Synchronizing...' : (isConfigured ? 'Update API Key' : 'Validate & Save')}
             </button>
           </div>
         </div>
@@ -158,6 +173,8 @@ function ProviderRow({ provider, isConfigured, onAdd, onDelete }: {
 
 export function ApiKeyManager() {
   const [keys, setKeys] = useState<ApiKey[]>([]);
+  const [pendingKeys, setPendingKeys] = useState<Record<string, string>>({});
+  const [savingAll, setSavingAll] = useState(false);
   const { isAuthenticated } = useAuthStore();
 
   const fetchKeys = async () => {
@@ -176,6 +193,14 @@ export function ApiKeyManager() {
   }, [isAuthenticated]);
 
   const handleAdd = async (provider: string, key: string) => {
+    // If already configured, delete first then re-add (replace)
+    const existing = keys.find((k) => k.provider === provider);
+    if (existing) {
+      await fetch(`${API_URL}/keys/${existing.id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${pb.authStore.token}` },
+      });
+    }
     try {
       const res = await fetch(`${API_URL}/keys`, {
         method: 'POST',
@@ -205,6 +230,22 @@ export function ApiKeyManager() {
     }
   };
 
+  const handlePendingChange = (provider: string, value: string) => {
+    setPendingKeys((prev) => ({ ...prev, [provider]: value }));
+  };
+
+  const pendingCount = Object.values(pendingKeys).filter(Boolean).length;
+
+  const handleSaveAll = async () => {
+    setSavingAll(true);
+    const entries = Object.entries(pendingKeys).filter(([, v]) => v.trim());
+    for (const [provider, key] of entries) {
+      await handleAdd(provider, key.trim());
+    }
+    setPendingKeys({});
+    setSavingAll(false);
+  };
+
   const configuredSet = new Set(keys.map((k) => k.provider));
   const configuredCount = configuredSet.size;
 
@@ -228,7 +269,7 @@ export function ApiKeyManager() {
             )}
           </div>
           <p className="text-foreground/40 text-sm font-medium max-w-xl leading-relaxed">
-            Architect your AI pipeline. Connect your proprietary API nodes to unleash automated creativity, deep synthesis, and visual generation. All transmissions are AES-256 encrypted.
+            Connect your API keys to unlock AI generation. All keys are AES-256 encrypted at rest.
           </p>
         </div>
       </div>
@@ -249,12 +290,28 @@ export function ApiKeyManager() {
                   isConfigured={configuredSet.has(provider.id)}
                   onAdd={handleAdd}
                   onDelete={handleDelete}
+                  pendingValue={pendingKeys[provider.id] ?? ''}
+                  onPendingChange={handlePendingChange}
                 />
               ))}
             </div>
           </div>
         ))}
       </div>
+
+      {/* Save All — shown when multiple rows have pending values */}
+      {pendingCount > 1 && (
+        <div className="sticky bottom-6 flex justify-center animate-in slide-in-from-bottom-4 duration-300">
+          <button
+            onClick={handleSaveAll}
+            disabled={savingAll}
+            className="inline-flex items-center gap-3 px-8 py-4 bg-linear-to-br from-primary to-secondary disabled:opacity-50 text-white font-bold rounded-2xl shadow-2xl shadow-primary/30 hover:shadow-primary/40 transform hover:scale-[1.02] transition-all duration-300 text-sm"
+          >
+            {savingAll ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+            {savingAll ? 'Saving All Keys...' : `Save All ${pendingCount} Keys`}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

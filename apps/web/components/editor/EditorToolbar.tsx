@@ -1,11 +1,20 @@
 "use client";
 
+import { useRef, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Save, CheckCircle, Loader2, ChevronLeft, ChevronRight, Download } from 'lucide-react';
+import { ArrowLeft, Save, CheckCircle, Loader2, ChevronLeft, ChevronRight, Download, ChevronDown, FileCode2, ImageIcon } from 'lucide-react';
 import { useEditorStore } from '@/store/useEditorStore';
 import { AiGenerateDialog } from './AiGenerateDialog';
 import { ShareDialog } from './ShareDialog';
-import { exportCarouselHtml } from '@/lib/exportCarousel';
+import { exportCarouselHtml, exportCarouselAsImages, ImageFormat } from '@/lib/exportCarousel';
+
+const EXPORT_OPTIONS: { label: string; value: string; icon: React.ElementType }[] = [
+  { label: 'HTML',        value: 'html',  icon: FileCode2 },
+  { label: 'PNG Images',  value: 'png',   icon: ImageIcon },
+  { label: 'JPEG Images', value: 'jpeg',  icon: ImageIcon },
+  { label: 'WebP Images', value: 'webp',  icon: ImageIcon },
+  { label: 'ZIP Bundle',  value: 'zip',   icon: Download },
+];
 
 export function EditorToolbar() {
   const router = useRouter();
@@ -14,9 +23,29 @@ export function EditorToolbar() {
     isSaving, isDirty, save, markComplete,
   } = useEditorStore();
 
-  const handleExport = () => {
+  const [exportOpen, setExportOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    if (!exportOpen) return;
+    const handler = (e: MouseEvent) => {
+      if (!dropdownRef.current?.contains(e.target as Node)) setExportOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [exportOpen]);
+
+  const handleExport = async (format: string) => {
+    setExportOpen(false);
     const { carouselTitle: title, slides: s } = useEditorStore.getState();
-    exportCarouselHtml(title, s);
+    if (format === 'html') {
+      exportCarouselHtml(title, s);
+    } else if (format === 'zip') {
+      await exportCarouselAsImages(title, s, 'png');
+    } else {
+      await exportCarouselAsImages(title, s, format as ImageFormat);
+    }
   };
 
   return (
@@ -72,19 +101,37 @@ export function EditorToolbar() {
 
       <div className="flex-1" />
 
-      {/* Actions Group */}
+      {/* Actions */}
       <div className="flex items-center gap-3">
         {/* AI Generate */}
         <AiGenerateDialog />
 
-        {/* Export */}
-        <button
-          onClick={handleExport}
-          className="hidden md:inline-flex items-center gap-2.5 px-5 py-3 rounded-2xl border border-white/5 text-foreground/60 hover:text-white hover:bg-white/5 text-xs font-bold tracking-tight transition-all"
-        >
-          <Download className="w-4 h-4" />
-          Export
-        </button>
+        {/* Export dropdown */}
+        <div ref={dropdownRef} className="relative hidden md:block">
+          <button
+            onClick={() => setExportOpen((o) => !o)}
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl border border-white/5 text-foreground/60 hover:text-white hover:bg-white/5 text-xs font-bold tracking-tight transition-all"
+          >
+            <Download className="w-4 h-4" />
+            Export
+            <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${exportOpen ? 'rotate-180' : ''}`} />
+          </button>
+
+          {exportOpen && (
+            <div className="absolute right-0 top-full mt-2 w-48 glass-dark border border-white/10 rounded-2xl shadow-2xl shadow-black/40 overflow-hidden animate-in zoom-in-95 slide-in-from-top-1 duration-200 z-[9999]">
+              {EXPORT_OPTIONS.map((opt) => (
+                <button
+                  key={opt.value}
+                  onClick={() => handleExport(opt.value)}
+                  className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold text-foreground/60 hover:text-white hover:bg-white/5 transition-all"
+                >
+                  <opt.icon className="w-4 h-4 shrink-0" />
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
 
         {/* Share */}
         <ShareDialog />
@@ -101,7 +148,7 @@ export function EditorToolbar() {
           {isDirty ? 'Save' : 'Saved'}
         </button>
 
-        {/* Mark complete */}
+        {/* Publish */}
         <button
           onClick={markComplete}
           disabled={isSaving}
