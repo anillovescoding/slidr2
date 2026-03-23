@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus, Trash2, Layers } from 'lucide-react';
+import { Plus, Trash2, Layers, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useEditorStore, Slide } from '@/store/useEditorStore';
 
 function SlideThumbnail({ slide, index, isActive }: { slide: Slide; index: number; isActive: boolean }) {
@@ -36,22 +36,57 @@ function SlideThumbnail({ slide, index, isActive }: { slide: Slide; index: numbe
 }
 
 export function SlidePanel() {
-  const { slides, activeIndex, addSlide, deleteSlide } = useEditorStore();
+  const { slides, activeIndex, addSlide, deleteSlide, isSidebarCollapsed, setSidebarCollapsed } = useEditorStore();
+
+  if (isSidebarCollapsed) {
+    return (
+      <div className="w-12 shrink-0 bg-background/40 backdrop-blur-2xl border-r border-white/5 flex flex-col items-center py-6 gap-6 z-40">
+        <button
+          onClick={() => setSidebarCollapsed(false)}
+          className="p-2 rounded-xl hover:bg-white/5 text-foreground/40 hover:text-white transition-all border border-transparent hover:border-white/10"
+        >
+          <ChevronRight className="w-5 h-5" />
+        </button>
+        <div className="flex flex-col gap-3">
+          {slides.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => useEditorStore.getState().setActiveIndex(i)}
+              className={`w-8 h-8 rounded-lg flex items-center justify-center text-[10px] font-bold transition-all ${
+                i === activeIndex ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-white/5 text-foreground/40 hover:text-white'
+              }`}
+            >
+              {i + 1}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="w-64 shrink-0 bg-background/40 backdrop-blur-2xl border-r border-white/5 flex flex-col h-full z-40">
+    <div className="w-64 shrink-0 bg-background/40 backdrop-blur-2xl border-r border-white/5 flex flex-col h-full z-40 transition-all duration-300">
       <div className="px-6 h-16 border-b border-white/5 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Layers className="w-4 h-4 text-primary" />
           <span className="text-[10px] font-bold text-foreground/40 uppercase tracking-[0.2em]">Storyline</span>
         </div>
-        <button
-          onClick={addSlide}
-          className="p-2 rounded-xl hover:bg-white/5 text-foreground/40 hover:text-white transition-all border border-transparent hover:border-white/10"
-          title="Add slide"
-        >
-          <Plus className="w-5 h-5" />
-        </button>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={addSlide}
+            className="p-2 rounded-xl hover:bg-white/5 text-foreground/40 hover:text-white transition-all border border-transparent hover:border-white/10"
+            title="Add slide"
+          >
+            <Plus className="w-5 h-5" />
+          </button>
+          <button
+            onClick={() => setSidebarCollapsed(true)}
+            className="p-2 rounded-xl hover:bg-white/5 text-foreground/40 hover:text-white transition-all border border-transparent hover:border-white/10"
+            title="Collapse sidebar"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+        </div>
       </div>
 
       <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4 custom-scrollbar">

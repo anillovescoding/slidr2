@@ -55,7 +55,7 @@ export function AiGenerateDialog() {
       {open && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-background/80 backdrop-blur-2xl animate-in fade-in duration-500" onClick={() => setOpen(false)} />
-          <div className="relative glass-dark border border-white/10 rounded-[40px] shadow-[0_0_80px_rgba(99,102,241,0.15)] w-full max-w-xl overflow-hidden animate-in zoom-in-95 duration-500">
+          <div className="relative glass-dark border border-white/10 rounded-[40px] shadow-[0_0_80px_rgba(99,102,241,0.15)] w-full max-w-xl max-h-[90vh] overflow-y-auto custom-scrollbar animate-in zoom-in-95 duration-500">
             {/* Header */}
             <div className="p-8 md:p-12 pb-6 border-b border-white/5 relative overflow-hidden">
               <div className="absolute top-0 right-0 p-8 pointer-events-none opacity-5">

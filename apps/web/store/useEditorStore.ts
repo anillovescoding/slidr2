@@ -37,6 +37,7 @@ interface EditorState {
   activeIndex: number;
   isSaving: boolean;
   isDirty: boolean;
+  isSidebarCollapsed: boolean;
 
   load: (id: string) => Promise<void>;
   setTitle: (title: string) => void;
@@ -48,6 +49,7 @@ interface EditorState {
   replaceSlides: (slides: Slide[]) => void;
   save: () => Promise<void>;
   markComplete: () => Promise<void>;
+  setSidebarCollapsed: (collapsed: boolean) => void;
 }
 
 export const useEditorStore = create<EditorState>((set, get) => ({
@@ -57,6 +59,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   activeIndex: 0,
   isSaving: false,
   isDirty: false,
+  isSidebarCollapsed: false,
 
   load: async (id: string) => {
     const record = await pb.collection('carousels').getOne(id);
@@ -132,4 +135,6 @@ export const useEditorStore = create<EditorState>((set, get) => ({
       set({ isSaving: false });
     }
   },
+
+  setSidebarCollapsed: (collapsed) => set({ isSidebarCollapsed: collapsed }),
 }));

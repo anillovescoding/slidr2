@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuthStore } from '../../store/useAuthStore';
 import { LayoutDashboard, Library, Palette, Settings, LogOut, Layers } from 'lucide-react';
+import { ThemeToggle } from './ThemeToggle';
 
 const routes = [
   { label: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
@@ -61,13 +62,15 @@ export function Sidebar() {
             <p className="text-sm font-semibold text-white truncate">{displayName}</p>
             <p className="text-[11px] text-foreground/40 font-medium truncate">{user?.email}</p>
           </div>
-          <button
-            onClick={logout}
-            title="Sign out"
-            className="p-2 rounded-lg hover:bg-red-500/10 text-foreground/40 hover:text-red-400 transition-all duration-200"
-          >
-            <LogOut className="w-4 h-4" />
-          </button>
+          <div className="flex items-center gap-1.5 ml-auto">
+            <ThemeToggle />
+            <button
+              onClick={logout}
+              className="p-2.5 rounded-xl hover:bg-red-500/10 text-foreground/40 hover:text-red-400 transition-all duration-300"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </div>
     </aside>
