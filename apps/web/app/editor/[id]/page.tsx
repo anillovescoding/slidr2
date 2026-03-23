@@ -19,8 +19,8 @@ export default function EditorPage() {
 
   if (!carouselId) {
     return (
-      <div className="h-screen flex items-center justify-center bg-slate-50">
-        <Loader2 className="w-8 h-8 animate-spin text-violet-500" />
+      <div className="h-screen flex items-center justify-center bg-background">
+        <Loader2 className="w-10 h-10 animate-spin text-primary" />
       </div>
     );
   }
@@ -28,11 +28,12 @@ export default function EditorPage() {
   const activeSlide = slides[activeIndex];
 
   return (
-    <div className="h-screen flex flex-col bg-slate-50 overflow-hidden">
+    <div className="h-screen flex flex-col bg-background overflow-hidden selection:bg-primary/30">
       <EditorToolbar />
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden relative">
         <SlidePanel />
-        <main className="flex-1 overflow-hidden bg-slate-100">
+        <main className="flex-1 overflow-hidden relative bg-[#0a0a0a]/50">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.03)_0%,transparent_70%)] pointer-events-none" />
           {activeSlide && (
             <SlideCanvas slide={activeSlide} index={activeIndex} total={slides.length} />
           )}

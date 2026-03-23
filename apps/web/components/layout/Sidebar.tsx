@@ -19,32 +19,32 @@ export function Sidebar() {
   const displayName = user?.name || user?.email?.split('@')[0] || 'User';
 
   return (
-    <aside className="w-64 hidden md:flex flex-col bg-white border-r border-slate-200 shrink-0 h-full">
+    <aside className="w-64 hidden md:flex flex-col bg-sidebar-bg shrink-0 h-full border-r border-white/5">
       {/* Logo */}
-      <div className="h-16 flex items-center px-5 border-b border-slate-100">
-        <Link href="/dashboard" className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center shadow-sm">
-            <Layers className="w-4 h-4 text-white" />
+      <div className="h-20 flex items-center px-6">
+        <Link href="/dashboard" className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-linear-to-br from-primary to-secondary flex items-center justify-center shadow-lg shadow-primary/20">
+            <Layers className="w-5 h-5 text-white" />
           </div>
-          <span className="font-bold text-xl tracking-tight text-slate-900">Slidr</span>
+          <span className="font-serif font-bold text-2xl tracking-tight text-white">Slidr</span>
         </Link>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-3 py-5 space-y-0.5">
+      <nav className="flex-1 px-4 py-6 space-y-1.5">
         {routes.map((route) => {
           const active = pathname === route.href;
           return (
             <Link
               key={route.href}
               href={route.href}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
                 active
-                  ? 'bg-indigo-50 text-indigo-700'
-                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                  ? 'bg-primary/10 text-primary shadow-sm shadow-primary/5'
+                  : 'text-foreground/60 hover:bg-white/5 hover:text-white'
               }`}
             >
-              <route.icon className={`w-4 h-4 shrink-0 ${active ? 'text-indigo-600' : 'text-slate-400'}`} />
+              <route.icon className={`w-4 h-4 shrink-0 transition-colors ${active ? 'text-primary' : 'text-foreground/40'}`} />
               {route.label}
             </Link>
           );
@@ -52,19 +52,19 @@ export function Sidebar() {
       </nav>
 
       {/* User footer */}
-      <div className="px-3 pb-4 border-t border-slate-100 pt-3">
-        <div className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors">
-          <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-semibold text-sm shrink-0">
+      <div className="px-4 pb-6 pt-4 border-t border-white/5">
+        <div className="flex items-center gap-3 px-3 py-3 rounded-2xl glass-dark hover:bg-white/5 transition-all duration-300">
+          <div className="w-9 h-9 rounded-full bg-linear-to-br from-primary/20 to-secondary/20 border border-white/10 flex items-center justify-center text-primary font-bold text-sm shrink-0">
             {initials}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-slate-900 truncate">{displayName}</p>
-            <p className="text-xs text-slate-400 truncate">{user?.email}</p>
+            <p className="text-sm font-semibold text-white truncate">{displayName}</p>
+            <p className="text-[11px] text-foreground/40 font-medium truncate">{user?.email}</p>
           </div>
           <button
             onClick={logout}
             title="Sign out"
-            className="p-1.5 rounded-md hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors"
+            className="p-2 rounded-lg hover:bg-red-500/10 text-foreground/40 hover:text-red-400 transition-all duration-200"
           >
             <LogOut className="w-4 h-4" />
           </button>

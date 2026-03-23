@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { X, Loader2, Plus } from 'lucide-react';
+import { X, Loader2, Plus, Sparkles } from 'lucide-react';
 import { pb } from '@/lib/pocketbase';
 
 interface CreateCarouselDialogProps {
@@ -11,7 +11,7 @@ interface CreateCarouselDialogProps {
 
 const DEFAULT_SLIDE = {
   id: 'slide-1',
-  background: '#ffffff',
+  background: '#060e20',
   elements: [],
 };
 
@@ -66,66 +66,69 @@ export function CreateCarouselDialog({ onCreated }: CreateCarouselDialogProps) {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors text-sm shadow-sm"
+        className="group relative inline-flex items-center gap-2.5 px-6 py-3.5 bg-linear-to-br from-primary to-secondary text-white font-bold rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-primary/20 text-sm tracking-tight"
       >
-        <Plus className="w-4 h-4" />
+        <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
         New Carousel
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setOpen(false)} />
-          <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 p-6">
-            <div className="flex items-center justify-between mb-5">
-              <div>
-                <h2 className="text-lg font-semibold text-slate-900">New Carousel</h2>
-                <p className="text-sm text-slate-500 mt-0.5">Give your project a name to get started.</p>
-              </div>
-              <button
-                onClick={() => setOpen(false)}
-                className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label htmlFor="carousel-title" className="block text-sm font-medium text-slate-700 mb-1.5">
-                  Title
-                </label>
-                <input
-                  id="carousel-title"
-                  ref={inputRef}
-                  type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="e.g. 5 tips for better sleep..."
-                  className="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent"
-                  disabled={loading}
-                />
-                {error && <p className="mt-2 text-xs text-red-500">{error}</p>}
-              </div>
-
-              <div className="flex gap-3 justify-end pt-1">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-background/80 backdrop-blur-xl animate-in fade-in duration-300" onClick={() => setOpen(false)} />
+          <div className="relative glass-dark border border-white/10 rounded-[40px] shadow-2xl w-full max-w-lg overflow-hidden animate-in zoom-in-95 duration-300">
+            <div className="p-8 md:p-12">
+              <div className="flex items-center justify-between mb-8">
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Sparkles className="w-4 h-4 text-primary" />
+                    <p className="text-[10px] font-bold tracking-widest text-primary/60 uppercase">Create New</p>
+                  </div>
+                  <h2 className="text-3xl font-serif font-bold text-white tracking-tight">Project Title</h2>
+                  <p className="text-foreground/40 mt-2 text-sm font-medium">What should we name your next masterpiece?</p>
+                </div>
                 <button
-                  type="button"
                   onClick={() => setOpen(false)}
-                  className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
-                  disabled={loading}
+                  className="p-3 rounded-2xl hover:bg-white/5 text-foreground/20 hover:text-white transition-all duration-200"
                 >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white font-medium rounded-lg transition-colors text-sm"
-                >
-                  {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-                  {loading ? 'Creating...' : 'Create'}
+                  <X className="w-6 h-6" />
                 </button>
               </div>
-            </form>
+
+              <form onSubmit={handleSubmit} className="space-y-8">
+                <div>
+                  <input
+                    id="carousel-title"
+                    ref={inputRef}
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="e.g. My Viral SaaS Tips..."
+                    className="w-full px-6 py-5 bg-white/5 border border-white/10 rounded-2xl text-lg font-medium text-white placeholder-foreground/20 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all duration-300"
+                    disabled={loading}
+                  />
+                  {error && <p className="mt-3 text-sm font-medium text-red-400 pl-2">{error}</p>}
+                </div>
+
+                <div className="flex items-center gap-4 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setOpen(false)}
+                    className="flex-1 px-8 py-4 text-sm font-bold text-foreground/60 hover:text-white hover:bg-white/5 rounded-2xl transition-all duration-200"
+                    disabled={loading}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="flex-[1.5] inline-flex items-center justify-center gap-2 px-8 py-4 bg-linear-to-br from-primary to-secondary disabled:opacity-50 text-white font-bold rounded-2xl shadow-lg shadow-primary/20 hover:shadow-primary/30 transform hover:scale-[1.02] transition-all duration-300 text-sm"
+                  >
+                    {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+                    {loading ? 'Initiating...' : 'Start Creating'}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       )}
