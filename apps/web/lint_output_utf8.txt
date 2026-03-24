@@ -1,0 +1,25 @@
+﻿
+> web@0.1.0 lint
+> eslint
+
+
+C:\Users\anil_\Downloads\Apps\Slidr2\apps\web\store\useBrandStore.ts
+   9:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  30:31  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+Γ£û 2 problems (2 errors, 0 warnings)
+
+npm : npm ERR! Lifecycle script `lint` failed 
+with error: 
+At line:1 char:1
++ npm run lint > lint_output.txt 2>&1
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: 
+(npm     ERR! Lifecy...ed with error: :String) 
+[], R    emoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+npm ERR! Error: command failed 
+npm ERR!   in workspace: web@0.1.0 
+npm ERR!   at location: 
+C:\Users\anil_\Downloads\Apps\Slidr2\apps\web 

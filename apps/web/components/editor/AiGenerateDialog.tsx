@@ -82,7 +82,7 @@ export function AiGenerateDialog() {
                     <p className="text-[10px] font-bold tracking-widest text-primary/60 uppercase">AI Orchestrator</p>
                   </div>
                   <h2 className="text-2xl font-serif font-bold text-white tracking-tight">Generate Carousel</h2>
-                  <p className="text-foreground/40 mt-1 text-sm font-medium">Describe your topic and we'll craft the slides.</p>
+                  <p className="text-foreground/40 mt-1 text-sm font-medium">Describe your topic and we&apos;ll craft the slides.</p>
                 </div>
                 <button
                   onClick={() => !loading && setOpen(false)}

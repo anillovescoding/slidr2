@@ -6,7 +6,7 @@ interface BrandState {
   profile: RecordModel | null;
   isLoading: boolean;
   fetchProfile: () => Promise<void>;
-  updateProfile: (data: any) => Promise<void>;
+  updateProfile: (data: Record<string, unknown>) => Promise<void>;
 }
 
 export const useBrandStore = create<BrandState>((set) => ({
@@ -27,7 +27,7 @@ export const useBrandStore = create<BrandState>((set) => ({
       set({ isLoading: false });
     }
   },
-  updateProfile: async (data: any) => {
+  updateProfile: async (data: Record<string, unknown>) => {
     const { profile } = useBrandStore.getState();
     set({ isLoading: true });
     try {

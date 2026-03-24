@@ -4,7 +4,8 @@
       "Bash(./gradlew assembleDebug --no-daemon --stacktrace)",
       "Bash(APK_DIR=\"c:/Users/anil_/Downloads/Apps/Slidr2/apps/mobile/android/app/build/outputs/apk/debug\")",
       "Bash(cp \"$APK_DIR/app-debug.apk\" \"$APK_DIR/slidr2.apk\")",
-      "Read(//c/Users/anil_/Downloads/Apps/Slidr2/apps/mobile/android/**)"
+      "Read(//c/Users/anil_/Downloads/Apps/Slidr2/apps/mobile/android/**)",
+      "Bash(find /c/Users/anil_/Downloads/Apps/Slidr2 -path */api/* -type f \\\\\\(-name *.ts -o -name *.tsx \\\\\\))"
     ],
     "additionalDirectories": [
       "c:\\Users\\anil_\\Downloads\\Apps\\Slidr2\\apps\\mobile\\src"
